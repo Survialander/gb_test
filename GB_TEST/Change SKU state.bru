@@ -1,0 +1,21 @@
+meta {
+  name: Change SKU state
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/skus/:id/state
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 3fd6a684-82c6-4522-9315-da5207a3e456
+}
+
+body:json {
+  {
+    "state": "CADASTRO-COMPLETO"
+  }
+}

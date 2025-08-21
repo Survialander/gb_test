@@ -1,0 +1,21 @@
+meta {
+  name: Update SKU fields
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/skus/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "description": "teste edicao descricao"
+  }
+}
