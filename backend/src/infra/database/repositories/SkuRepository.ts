@@ -11,7 +11,8 @@ export interface ISkuRepository {
   findAll(data: {
     page: number;
     limit: number;
-  }): Promise<{ data: Sku[]; totalPages: number; hasMore: boolean }>;
+  }): Promise<{ data: Sku[]; hasMore: boolean }>;
+  findBySku(sku: string): Promise<Sku | undefined>;
 }
 
 export class SkuRepository implements ISkuRepository {
@@ -24,6 +25,19 @@ export class SkuRepository implements ISkuRepository {
     skuObject.setState(state);
 
     return skuObject;
+  }
+
+  public async findBySku(sku: string): Promise<Sku | undefined> {
+    const [result] = await this.db
+      .select()
+      .from(skusTable)
+      .where(eq(skusTable.sku, sku));
+
+    if (!result) {
+      return undefined;
+    }
+
+    return this.entityToSkuObject(result);
   }
 
   public async create(data: Sku): Promise<void> {
@@ -71,18 +85,17 @@ export class SkuRepository implements ISkuRepository {
 
   public async findAll(data: { page: number; limit: number }) {
     const { limit, page } = data;
-    // const count = 100;
-    const [counter] = await this.db.select({ count: count() }).from(skusTable);
+    const [counter] = await this.db
+      .select({ count: count(skusTable.id) })
+      .from(skusTable);
     const skus = await this.db.query.skusTable.findMany({
       orderBy: (sku, { desc }) => [desc(sku.createdAt)],
       offset: limit * (page - 1),
       limit,
     });
-
     const pages = Math.ceil(counter.count / limit);
     return {
       data: skus.map((sku) => this.entityToSkuObject(sku)),
-      totalPages: pages,
       hasMore: page < pages,
     };
   }

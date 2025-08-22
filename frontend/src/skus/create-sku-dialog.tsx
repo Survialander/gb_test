@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircleIcon } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 
 const url = import.meta.env.VITE_API_URL;
@@ -26,6 +26,7 @@ export default function CreateSkuDialog({
   handleRefetch: () => void;
   handleOpen: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const {
     register,
     handleSubmit,
@@ -55,7 +56,7 @@ export default function CreateSkuDialog({
   const onSubmit = async () => {
     const { description, comercialDescription, sku } = getValues();
 
-    await fetch(`${url}/skus`, {
+    const response = await fetch(`${url}/skus`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,13 +64,21 @@ export default function CreateSkuDialog({
       body: JSON.stringify({ description, comercialDescription, sku }),
     });
 
+    if (!response.ok) {
+      const message = await new Response(response.body).json();
+      setErrorMessage(message.message);
+      return;
+    }
+
     reset();
+    setErrorMessage("");
     handleOpen(!open);
     handleRefetch();
   };
 
   const onOpenChange = () => {
     reset();
+    setErrorMessage("");
     handleOpen(!open);
   };
 
@@ -100,6 +109,14 @@ export default function CreateSkuDialog({
                 )}
               </div>
             ))}
+            {errorMessage && (
+              <div className="mt-2">
+                <Alert variant="destructive" className="px-3 py-2">
+                  <AlertCircleIcon />
+                  <AlertTitle>{errorMessage}</AlertTitle>
+                </Alert>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <DialogClose asChild>

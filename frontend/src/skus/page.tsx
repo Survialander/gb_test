@@ -3,7 +3,7 @@ import { columns, type Sku } from "./columns";
 import { DataTable } from "./data-table";
 import UpdateSkuDialog from "./update-sku-dialog";
 import CreateSkuDialog from "./create-sku-dialog";
-import ChangeStateDialog from "./chage-state-dialog";
+import ChangeStateDialog from "./change-state-dialog";
 
 const url = import.meta.env.VITE_API_URL;
 

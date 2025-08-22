@@ -4,9 +4,9 @@
   "type": "module",
   "module": "es2022",
   "scripts": {
-    "dev": "dotenv -e .env tsx watch src/server.ts",
+    "dev": "dotenv -e ../.env tsx watch src/server.ts",
     "build": "tsc",
-    "start": "dotenv -e .env node dist/src/server.js",
+    "start": "dotenv -e ../.env node dist/src/server.js",
     "db:push": "NODE_OPTIONS='--import tsx' drizzle-kit push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

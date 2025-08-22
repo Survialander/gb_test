@@ -70,13 +70,14 @@ export default function ChangeStateDialog({
       body: JSON.stringify({ state }),
     });
 
-    if (response.status === 400) {
+    if (!response.ok) {
       const message = await new Response(response.body).json();
       setErrorMessage(message.message);
       return;
     }
 
     handleRefetch();
+    setErrorMessage("");
     handleOpen(!open);
   };
 

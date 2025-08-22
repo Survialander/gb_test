@@ -30,7 +30,6 @@ export default function UpdateSkuDialog({
   handleRefetch: () => void;
 }) {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [skuObject, setSkuObject] = useState<Sku>();
   const {
     register,
     handleSubmit,
@@ -68,8 +67,6 @@ export default function UpdateSkuDialog({
       sku: sku.sku,
       state: sku.state,
     });
-
-    setSkuObject(sku);
   }, [sku, reset]);
 
   const handleOpenChange = () => {
@@ -79,19 +76,18 @@ export default function UpdateSkuDialog({
   };
 
   const onSubmit = async () => {
-    const { description, comercialDescription, sku } = getValues();
+    const { description, comercialDescription, sku: skuCode } = getValues();
 
     const updateObject = {
-      description:
-        skuObject!.description !== description ? description : undefined,
+      description: sku.description !== description ? description : undefined,
       comercialDescription:
-        skuObject!.comercialDescription !== comercialDescription
+        sku.comercialDescription !== comercialDescription
           ? comercialDescription
           : undefined,
-      sku: skuObject!.sku !== sku ? sku : undefined,
+      sku: sku.sku !== skuCode ? skuCode : undefined,
     };
 
-    const response = await fetch(`${url}/skus/${skuObject!.id}`, {
+    const response = await fetch(`${url}/skus/${sku.id}`, {
       method: "PATCH",
       body: JSON.stringify(updateObject),
       headers: {
@@ -99,7 +95,7 @@ export default function UpdateSkuDialog({
       },
     });
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       const message = await new Response(response.body).json();
       setErrorMessage(message.message);
       return;
@@ -107,6 +103,7 @@ export default function UpdateSkuDialog({
 
     handleRefetch();
     handleOpen(!open);
+    setErrorMessage("");
   };
 
   return (
@@ -114,10 +111,10 @@ export default function UpdateSkuDialog({
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Atulizar SKU:</DialogTitle>
+            <DialogTitle>Atualizar SKU:</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            {skuObject &&
+            {sku &&
               formFields.map((form) => (
                 <div key={form.key} className="grid gap-3">
                   <Label htmlFor={form.key}>{form.label}:</Label>

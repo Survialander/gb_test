@@ -35,6 +35,15 @@ export class SkuService {
   public async create(data: CreateSkuDTO) {
     const { comercialDescription, description, sku: skuCode } = data;
 
+    const exists = await this.skuRepository.findBySku(skuCode);
+
+    if (exists) {
+      throw new APIError(
+        `Já existe um SKU cadastrado com o código '${skuCode}'.`,
+        400,
+      );
+    }
+
     const skuObject = new Sku({
       description,
       comercialDescription,

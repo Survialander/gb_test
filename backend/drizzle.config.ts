@@ -3,7 +3,7 @@ import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
 config({
-  path: ".env",
+  path: "../.env",
 });
 
 export default defineConfig({
