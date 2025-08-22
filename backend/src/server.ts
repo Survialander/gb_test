@@ -2,6 +2,7 @@ import Koa from "koa";
 import { router } from "./infra/http/routes/skuRoutes.js";
 import { bodyParser } from "@koa/bodyparser";
 import cors from "@koa/cors";
+import { APIError } from "./application/errors/ApiError.js";
 
 export const app = new Koa();
 
@@ -16,8 +17,13 @@ app.use(async (ctx, next) => {
   try {
     await next();
   } catch (err) {
-    ctx.status = err.statusCode || err.status || 500;
-    ctx.body = { message: err.message ?? "Internal Server Error" };
+    if (err instanceof APIError) {
+      ctx.status = err.status;
+      ctx.body = { message: err.message };
+    } else {
+      ctx.status = 500;
+      ctx.body = { message: "Ocorreu um erro ao processar a requisição" };
+    }
   }
 });
 app.use(bodyParser());
