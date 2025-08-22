@@ -3,7 +3,7 @@ import { router } from "./infra/http/routes/skuRoutes.js";
 import { bodyParser } from "@koa/bodyparser";
 import cors from "@koa/cors";
 
-const app = new Koa();
+export const app = new Koa();
 
 app.use(cors());
 app.use(async (ctx, next) => {
