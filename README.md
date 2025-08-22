@@ -189,7 +189,7 @@ HTTP 200 OK
 1. **Pré-requisitos**: Docker e Docker Compose instalados.
 2. **Suba os containers**:
    ```sh
-   docker-compose up --build
+   docker-compose up --build ou docker compose up --build
    ```
 3. **Acesse o frontend**: Normalmente disponível em `http://localhost:5173`
 4. **API Backend**: Disponível em `http://localhost:3000`
